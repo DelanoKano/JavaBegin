@@ -130,7 +130,7 @@ void gameOver() {
       text("Click ENTER ", width / 2, height / 1.5);
     if (keyCode == 10 && restartOnce == 0) {
     restart();
-    println("restartOnce");
+   
     
   }
 }
