@@ -6,45 +6,42 @@ int foodX, foodY;
 int directionX = 1;
 int directionY = 0;
 int playerScore = 0;
+
+
 boolean dead = false;
+
 
 int restartOnce = 0;
 
 PImage img;
+
 import processing.sound.*;
 SoundFile file;
 
 void setup() {
   size(500, 500);
+  img = loadImage("snake.jpg");
   file = new SoundFile(this, "EXCITING SOUND.mp3");
   file.loop();
-  img = loadImage("snake.jpg");
   cols = floor(width / gridSize);
   rows = floor(height / gridSize);
   snakeX = new int[cols * rows];
   snakeY = new int[cols * rows];
-  frameRate(8);
-  spawnFood();
-  snakeLength = 1;
-  dead = false;
+  frameRate(10);
   
-
 }
 
 void draw() {
-  background(115,45,90);
-  image(img,0,0);
+  background(115, 45, 90);
+  image(img, 0, 0);
   moveSnake();
   checkCollision();
   checkFood();
   drawSnake();
   drawFood();
   drawSnake();
-  restart();
   playerScore();
-  
-  
-  
+ 
 }
 
 void moveSnake() {
@@ -56,19 +53,27 @@ void moveSnake() {
   snakeY[0] += directionY * gridSize;
   snakeX[0] = constrain(snakeX[0], 0, width - gridSize);
   snakeY[0] = constrain(snakeY[0], 0, height - gridSize);
+  dead = false;
 }
 
 void checkCollision() {
-  for (int i = 1; i < snakeLength; i++) {
+  for (int i = 0; i < snakeLength; i++) {
     if (snakeX[0] == snakeX[i] && snakeY[0] == snakeY[i]) {
       gameOver();
-     dead = true;
+      dead = true;
     }
   }
 }
-void restart(){
+void restart() {
 
-}  
+  snakeX = new int[cols * rows];
+  snakeY = new int[cols * rows];
+  spawnFood();
+  snakeLength = 1;
+  dead = false;
+  playerScore();
+  
+}
 void checkFood() {
   if (snakeX[0] == foodX && snakeY[0] == foodY) {
     snakeLength++;
@@ -83,10 +88,10 @@ void spawnFood() {
 
 void drawSnake() {
   for (int i = 0; i < snakeLength; i++) {
-    fill(0,128,0);
-    strokeWeight(3);
+    fill(0, 128, 0);
+    strokeWeight(4);
     rect(snakeX[i], snakeY[i], gridSize, gridSize);
-    dead = true;
+    
   }
 }
 
@@ -109,25 +114,30 @@ void keyPressed() {
   } else if (keyCode == RIGHT && directionX != -1) {
     directionX = 1;
     directionY = 0;
+    
   }
 }
 
 void gameOver() {
-  if(dead) {
+  if (dead) {
     file.loop();
-  background(255, 0, 0);
-  textAlign(CENTER, CENTER);
-  textSize(32);
-  fill(255);
-  text("GAME OVER", width / 2, height / 2);
-  restartOnce = 0;
-  }else {
+    background(255, 0, 0);
+    textAlign(CENTER, CENTER);
+    textSize(32);
+    fill(255);
+    text("GAME OVER ", width / 2, height / 2);
+     text("Try Again? ", width / 2, height / 1.7);
+      text("Click ENTER ", width / 2, height / 1.5);
+    if (keyCode == 10 && restartOnce == 0) {
     restart();
- }
+    println("restartOnce");
+    
+  }
+}
 }
 
-void playerScore(){
+void playerScore() {
   textSize(20);
   fill(0);
-  text("Score : " + (snakeLength - 1), 40,18);
-} 
+  text("Score : " + (snakeLength - 1), 40, 18);
+}
